@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Long You Been on HRT?</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Stars container -->
+    <div class="stars"></div>
+
+    <!-- Main container for content -->
+    <div class="container">
+        <h3>How Long You Been on HRT?</h3>
+        <form id="hrtForm">
+            <input type="date" id="startDate" value="2024-11-16" required>
+        </form>
+        <div id="result" class="result"></div>
+    </div>
+
+    <!-- JavaScript to calculate time difference and animate stars -->
+    <script>
+        // Function to calculate the time difference
+        function calculateTimeDifference(startDate) {
+            const today = new Date();
+            const start = new Date(startDate);
+            const diffInMilliseconds = today - start;
+
+            const years = Math.floor(diffInMilliseconds / (365.25 * 24 * 60 * 60 * 1000));
+            const months = Math.floor((diffInMilliseconds % (365.25 * 24 * 60 * 60 * 1000)) / (30.44 * 24 * 60 * 60 * 1000));
+            const days = Math.floor((diffInMilliseconds % (30.44 * 24 * 60 * 60 * 1000)) / (24 * 60 * 60 * 1000));
+            const weeks = Math.floor(diffInMilliseconds / (7 * 24 * 60 * 60 * 1000));
+
+            return { years, months, days, weeks };
+        }
+
+        // Function to handle date change and update the result automatically
+        document.getElementById('startDate').addEventListener('change', function (e) {
+            const startDate = e.target.value;
+
+            // AJAX request to calculate the time difference on the client side
+            setTimeout(function () {
+                const { years, months, days, weeks } = calculateTimeDifference(startDate);
+                document.getElementById('result').innerHTML = `
+                    <p>Years: ${years} year(s) and ${months} month(s) and ${days} day(s)</p>
+                    <p>Weeks: ${weeks} week(s)</p>
+                `;
+            }, 100);
+        });
+
+        // Calculate the time difference from the default date when the page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            const defaultDate = document.getElementById('startDate').value;
+            const { years, months, days, weeks } = calculateTimeDifference(defaultDate);
+            document.getElementById('result').innerHTML = `
+                <p>Years: ${years} year(s) and ${months} month(s) and ${days} day(s)</p>
+                <p>Weeks: ${weeks} week(s)</p>
+            `;
+        });
+
+        // Function to create animated stars
+        document.addEventListener('DOMContentLoaded', function () {
+            const starField = document.createElement('div');
+            starField.classList.add('stars');
+            document.body.appendChild(starField);
+
+            const starCount = 100;
+
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                const size = Math.random() * 3 + 1;
+                const xPos = Math.random() * window.innerWidth;
+                const yPos = Math.random() * window.innerHeight;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.top = `${yPos}px`;
+                star.style.left = `${xPos}px`;
+                starField.appendChild(star);
+            }
+        });
+    </script>
+</body>
+</html>
